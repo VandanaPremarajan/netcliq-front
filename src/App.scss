@@ -1,0 +1,36 @@
+$logoColor: #dd0000;
+$blackColor: #000;
+$whiteColor: #fff;
+
+.admin_logo{
+  color: $logoColor;
+  font-weight: 700;
+  padding-top: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+.navbar-brand{
+  color: $logoColor;
+  font-weight: 700;
+  font-size: 20px;
+}
+.logo_login{
+  color: $logoColor;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+}
+.ant-menu-title-content a{
+  text-decoration: none;
+}
+.dark_bg{
+  background-color: $blackColor;
+}
+.navbar{
+  background-color: $blackColor;
+}
+.footer{
+  text-align: center;
+  background-color: $blackColor;
+  color: $whiteColor;
+}
