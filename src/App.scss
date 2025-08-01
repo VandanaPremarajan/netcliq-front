@@ -34,3 +34,72 @@ $whiteColor: #fff;
   background-color: $blackColor;
   color: $whiteColor;
 }
+
+.carousel-container {
+  position: relative;
+  padding: 40px 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 300px;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease-in-out;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.carousel-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.gradient-left,
+.gradient-right {
+  position: absolute;
+  top: 0;
+  width: 80px;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gradient-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.gradient-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.ant-layout-header{
+  background-color: var($blackColor);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .swiper-slide {
+    width: 200px;
+    height: 300px;
+  }
+}

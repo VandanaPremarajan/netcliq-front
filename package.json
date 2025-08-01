@@ -9,11 +9,14 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.26.5",
     "axios": "^1.10.0",
+    "motion": "^12.23.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0",
     "react-scripts": "5.0.1",
     "sass": "^1.89.2",
+    "swiper": "^11.2.10",
+    "video.js": "^8.23.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -1,0 +1,102 @@
+.trending-wrapper {
+  padding: 40px 20px;
+  background-color: #111;
+  color: white;
+}
+
+.trending-wrapper h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.trending-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scroll-behavior: smooth;
+}
+
+.movie-card {
+  position: relative;
+  width: 400px;
+  /* height: 330px; */
+  flex: 0 0 auto;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease, filter 0.3s;
+}
+
+.movie-card:hover img {
+  transform: scale(1.05);
+  filter: brightness(60%);
+}
+
+.movie-info-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
+}
+
+.movie-card:hover .movie-info-overlay {
+  opacity: 1;
+}
+
+.movie-info-overlay h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.movie-info-overlay .genre,
+.movie-info-overlay .details,
+.movie-info-overlay .cast {
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  color: #ccc;
+}
+
+.play-button {
+  margin-top: 8px;
+  padding: 8px 14px;
+  background-color: #e50914;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.play-button:hover {
+  background-color: #f40612;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .movie-card {
+    min-width: 160px;
+  }
+  .movie-info-overlay {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+}

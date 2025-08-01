@@ -6,15 +6,17 @@ import {
   Button,
   DatePicker,
   Select,
-  Switch,
   Modal,
   Upload,
-  Image
+  Image,
 } from "antd";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { content_type } from "../../constants/formConstants";
 import { textareaMaxLength } from "../../constants/formConstants";
+import DurationSelector from "../DurationSelector";
+// import VideoPlayer from "../VideoPlayer";
+import { APP_URL } from "../../constants/api_settings";
 
 function AddContent({
   isEditRecord,
@@ -28,8 +30,23 @@ function AddContent({
   const [form] = Form.useForm();
   const { TextArea } = Input;
 
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [isImgLoading, setisImgLoading] = useState(false);
+  // poster
+  const [isPosterLoading, setIsPosterLoading] = useState(false);
+  const [posterFileList, setPosterFileList] = useState([]);
+  const [posterPreviewOpen, setPosterPreviewOpen] = useState(false);
+  const [posterPreviewImage, setPosterPreviewImage] = useState("");
+
+  // trailer_video
+  const [isTrailerLoading, setIsTrailerLoading] = useState(false);
+  const [trailerFileList, setTrailerFileList] = useState([]);
+  const [trailerPreviewOpen, setTrailerPreviewOpen] = useState(false);
+  const [trailerPreviewImage, setTrailerPreviewImage] = useState("");
+
+  // video_file
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [videoFileList, setVideoFileList] = useState([]);
+  const [videoPreviewOpen, setVideoPreviewOpen] = useState(false);
+  const [videoPreviewImage, setVideoPreviewImage] = useState("");
 
   const handleModalCancel = () => {
     closeModal();
@@ -49,31 +66,115 @@ function AddContent({
 
   const ClearFields = useCallback(() => {
     setIsEdit(false);
-    setPreviewUrl('');
-    setisImgLoading(false);
+    setIsPosterLoading(false);
+    setPosterFileList([]);
+    setPosterPreviewOpen(false);
+    setTrailerPreviewImage('');
+
+    setIsTrailerLoading(false);
+    setTrailerFileList([]);
+    setTrailerPreviewOpen(false);
+    setTrailerPreviewImage('');
+
+    setIsVideoLoading(false);
+    setVideoFileList([]);
+    setVideoPreviewOpen(false);
+    setVideoPreviewImage('');
     form.resetFields();
-  }, [form, setIsEdit, setPreviewUrl]);
+  }, [form, setIsEdit]);
 
   useEffect(() => {
     if (isEditRecord && Object.keys(isEditRecord).length > 0) {
-      console.log(isEditRecord)
-      form.setFieldsValue({
-        title: isEditRecord.title,
-        description: isEditRecord.description,
-        year: dayjs(isEditRecord.year, 'YYYY'),
-        duration: "nil",
-        quality: isEditRecord.quality,
-        language: isEditRecord.language,
-        subtitles: isEditRecord.subtitles,
-        cast: isEditRecord.cast,
-        genre: isEditRecord.genre_ID.map(g => g._id),
-        video_file: 'nil',
-        poster: 'nil',
-        trailer_video: 'nil',
-        content_type: isEditRecord.content_type,
-        is_premium: isEditRecord.is_premium ? true : false,
-        release_date: dayjs(isEditRecord.release_date, "MMMM D, YYYY"),
-      });
+      console.log(isEditRecord);
+      // settimeout for duration, waiting for <durationSelector> to mount first
+      setTimeout(() => {
+        let posterFile;
+        if (isEditRecord.poster) {
+          posterFile = [
+            {
+              uid: "-1",
+              name: "poster.jpg",
+              status: "done",
+              url: `${APP_URL}${isEditRecord.poster}`,
+            },
+          ];
+          setPosterFileList(posterFile);
+        }
+
+        // Trailer
+        let trailerFile;
+        if (isEditRecord.trailer_video) {
+          const videoUrl = `${APP_URL}${isEditRecord.trailer_video}`;
+          trailerFile = [
+            {
+              uid: "-2",
+              name: "trailer.mp4",
+              status: "done",
+              url: videoUrl,
+            },
+          ];
+          setTrailerFileList(trailerFile);
+          setTrailerPreviewImage({
+            autoplay: false,
+            controls: true,
+            responsive: true,
+            fluid: true,
+            sources: [
+              {
+                src: videoUrl,
+                type: "video/mp4",
+              },
+            ],
+          });
+        }
+
+        // Video File
+        let videoFile;
+        if (isEditRecord.video_file) {
+          const videoUrl = `${APP_URL}${isEditRecord.video_file}`;
+          videoFile = [
+            {
+              uid: "-3",
+              name: "video.mp4",
+              status: "done",
+              url: videoUrl,
+            },
+          ];
+          setVideoFileList(videoFile);
+          setVideoPreviewImage({
+            autoplay: false,
+            controls: true,
+            responsive: true,
+            fluid: true,
+            sources: [
+              {
+                src: videoUrl,
+                type: "video/mp4",
+              },
+            ],
+          });
+        }
+
+        form.setFieldsValue({
+          title: isEditRecord.title,
+          description: isEditRecord.description,
+          year: dayjs(isEditRecord.year, "YYYY"),
+          duration: {
+            hours: Math.floor(isEditRecord.duration / 60),
+            minutes: isEditRecord.duration % 60,
+          },
+          quality: isEditRecord.quality,
+          language: isEditRecord.language,
+          subtitles: isEditRecord.subtitles,
+          cast: isEditRecord.cast,
+          genre: isEditRecord.genre_ID.map((g) => g._id),
+          video_file: videoFile,
+          poster: posterFile,
+          trailer_video: trailerFile,
+          content_type: isEditRecord.content_type,
+          release_date: isEditRecord.release_date ? dayjs(isEditRecord.release_date) : null,
+        });
+      }, 0);
     } else {
       ClearFields();
     }
@@ -85,34 +186,107 @@ function AddContent({
     return current && current.year() > currentYear;
   };
 
-  const uploadProps = {
-  name: 'file',
-  // action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-  // headers: {
-  //   authorization: 'authorization-text',
-  // },
-  listType:"picture-circle",
-  onChange(info) {
-     const preview = URL.createObjectURL(info.file.originFileObj);
-    setPreviewUrl(preview);
+  // const handleRemove = () => {
+  //   setPosterFileList([]);
+  // };
 
-    if (info.file.status !== 'uploading') {
-      setisImgLoading(true);
+  const handleCancel = () => {
+    setPosterPreviewOpen(false);
+    setPosterPreviewImage("");
+  };
+
+  const handleChange = ({ file, fileList, type }) => {
+    let previewUrl;
+    if (file.originFileObj instanceof Blob) {
+      previewUrl = URL.createObjectURL(file.originFileObj);
+    } else if (file.url) {
+      previewUrl = file.url;
+    }
+    if (type === "poster") {
+      setPosterFileList(fileList);
+    } else if (type === "trailer") {
+      setTrailerFileList(fileList);
+      // const previewUrl = URL.createObjectURL(file.originFileObj);
+      setTrailerPreviewImage({
+        autoplay: false,
+        controls: true,
+        responsive: true,
+        fluid: true,
+        sources: [
+          {
+            src: previewUrl,
+            type: "video/mp4",
+          },
+        ],
+      });
+    } else if (type === "video_file") {
+      setVideoFileList(fileList);
+      // const previewUrl = URL.createObjectURL(file.originFileObj);
+      setVideoPreviewImage({
+        autoplay: false,
+        controls: true,
+        responsive: true,
+        fluid: true,
+        sources: [
+          {
+            src: previewUrl,
+            type: "video/mp4",
+          },
+        ],
+      });
+    }
+  };
+
+  const handlePreview = ({ file, type }) => {
+    console.log(file);
+    let previewUrl;
+    if (file.originFileObj instanceof Blob) {
+      previewUrl = URL.createObjectURL(file.originFileObj);
+    } else if (file.url) {
+      previewUrl = file.url;
+    } else {
+      console.warn("No valid preview source for file:", file);
       return;
     }
-    if (info.file.status === 'done') {
-      setisImgLoading(false);
-    } else if (info.file.status === 'error') {
-      console.log(`${info.file.name} file upload failed.`);
+    if (type === "poster") {
+      console.log(2);
+      setPosterPreviewImage(previewUrl);
+      setPosterPreviewOpen(true);
+    } else if (type === "trailer") {
+      setTrailerPreviewImage(previewUrl);
+      setTrailerPreviewOpen(true);
+    } else if (type === "video_file") {
+      setVideoPreviewImage(previewUrl);
+      setVideoPreviewOpen(true);
     }
-  },
-};
-const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
-      {isImgLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
+  };
+
+  const beforeUpload = (file, type) => {
+    // if(type === 'poster'){
+    //   const isImage = file.type.startsWith("image/");
+    //   if (!isImage) {
+    //     console.log("Only images allowed");
+    //     return Upload.LIST_IGNORE;
+    //   }
+    // }
+    // const previewUrl = URL.createObjectURL(file);
+    // console.log(previewUrl)
+    // Object.assign(file, {
+    //   status: "done",
+    //   url: previewUrl,
+    //   preview: previewUrl,
+    // });
+    // return true; // so file enters fileList procedure
+  };
+
+  const uploadButton = (isLoading) => {
+    return (
+      <button style={{ border: 0, background: "none" }} type="button">
+        {isLoading ? <LoadingOutlined /> : <PlusOutlined />}
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </button>
+    );
+  };
 
   return (
     <>
@@ -127,7 +301,7 @@ const uploadButton = (
           sm: "80%",
           md: "70%",
           lg: "60%",
-          xl: "70%",
+          xl: "90%",
           xxl: "50%",
         }}
       >
@@ -152,7 +326,11 @@ const uploadButton = (
             </div>
             <div className="col-md-2">
               <Form.Item name="year" label="Year" rules={[{ required: true }]}>
-                <DatePicker picker="year" format="YYYY" disabledDate={disableFutureYears} />
+                <DatePicker
+                  picker="year"
+                  format="YYYY"
+                  disabledDate={disableFutureYears}
+                />
               </Form.Item>
             </div>
             <div className="col-md-2">
@@ -170,20 +348,11 @@ const uploadButton = (
                 label="Content Type"
                 rules={[{ required: true }]}
               >
-                <Select
-                  style={{ width: "100%" }}
-                  options={content_type}
-                />
+                <Select style={{ width: "100%" }} options={content_type} />
               </Form.Item>
             </div>
             <div className="col-md-2">
-              <Form.Item
-                name="is_premium"
-                label="Premium"
-                rules={[{ required: false }]}
-              >
-                <Switch />
-              </Form.Item>
+              <DurationSelector />
             </div>
           </div>
           <div className="row">
@@ -263,21 +432,105 @@ const uploadButton = (
                 label="Poster"
                 rules={[{ required: true }]}
               >
-                <Upload {...uploadProps}>
-                  {previewUrl ? <img src={previewUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                <Upload
+                  action=""
+                  accept="image/*"
+                  listType="picture-card"
+                  fileList={posterFileList}
+                  customRequest={({ onSuccess }) => {
+                    // no upload, just signal success to bypass the error caused by action=""
+                    setTimeout(() => onSuccess?.("ok"), 0);
+                  }}
+                  beforeUpload={(info) => {
+                    beforeUpload({ ...info, type: "poster" });
+                  }}
+                  onChange={(info) => {
+                    handleChange({ ...info, type: "poster" });
+                  }}
+                  onPreview={(file) => {
+                    handlePreview({ file, type: "poster" });
+                  }}
+                >
+                  {posterFileList.length >= 1
+                    ? null
+                    : uploadButton(isPosterLoading)}
+                </Upload>
+              </Form.Item>
+              {posterPreviewImage && (
+                <Image
+                  wrapperStyle={{ display: "none" }}
+                  preview={{
+                    visible: posterPreviewOpen,
+                    onVisibleChange: (visible) => setPosterPreviewOpen(visible),
+                    afterOpenChange: (visible) =>
+                      !visible && setPosterPreviewImage(""),
+                  }}
+                  src={posterPreviewImage}
+                />
+              )}
+            </div>
+            <div className="col-md-4">
+              <Form.Item
+                name="trailer_video"
+                label="Trailer Video"
+                rules={[{ required: true }]}
+              >
+                <Upload
+                  action=""
+                  accept="video/*"
+                  listType="picture-card"
+                  fileList={trailerFileList}
+                  customRequest={({ onSuccess }) => {
+                    // no upload, just signal success to bypass the error caused by action=""
+                    setTimeout(() => onSuccess?.("ok"), 0);
+                  }}
+                  beforeUpload={(info) => {
+                    beforeUpload({ ...info, type: "trailer" });
+                  }}
+                  onChange={(info) => {
+                    handleChange({ ...info, type: "trailer" });
+                  }}
+                  onPreview={(file) => {
+                    handlePreview({ file, type: "trailer" });
+                  }}
+                >
+                  {trailerFileList.length >= 1
+                    ? null
+                    : uploadButton(isTrailerLoading)}
                 </Upload>
               </Form.Item>
             </div>
-            {previewUrl && (
-        <div style={{ marginTop: 16 }}>
-          <Image
-            src={previewUrl}
-            alt="Poster Preview"
-            width={200}
-            style={{ border: '1px solid #ccc', borderRadius: 4 }}
-          />
-        </div>
-      )}
+            <div className="col-md-4">
+              <Form.Item
+                name="video_file"
+                label="Video"
+                rules={[{ required: true }]}
+              >
+                <Upload
+                  action=""
+                  accept="video/*"
+                  listType="picture-card"
+                  fileList={videoFileList}
+                  customRequest={({ onSuccess }) => {
+                    // no upload, just signal success to bypass the error caused by action=""
+                    setTimeout(() => onSuccess?.("ok"), 0);
+                  }}
+                  beforeUpload={(info) => {
+                    beforeUpload({ ...info, type: "video_file" });
+                  }}
+                  onChange={(info) => {
+                    handleChange({ ...info, type: "video_file" });
+                  }}
+                  onPreview={(file) => {
+                    handlePreview({ file, type: "video_file" });
+                  }}
+                >
+                  {videoFileList.length >= 1
+                    ? null
+                    : uploadButton(isVideoLoading)}
+                </Upload>
+              </Form.Item>
+            </div>
           </div>
           <Form.Item label={null}>
             <Space size="small">

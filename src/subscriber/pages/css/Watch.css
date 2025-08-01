@@ -1,0 +1,15 @@
+.watch-page {
+  background-color: #000;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.watch-loading,
+.watch-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+  color: white;
+}

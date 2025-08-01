@@ -1,8 +1,12 @@
-import { Avatar, Dropdown } from "antd";
-import { UserOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { Layout, Menu, Input, Button, Avatar, Dropdown } from 'antd';
+import { SearchOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
+import './css/SearchAnimation.css';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Header = ({ setIsAuthenticated }) => {
+const { Header } = Layout;
+
+const Navbar = ({ setIsAuthenticated }) => {
     const navigate = useNavigate();
     const handleLogout = (e) => {
         localStorage.removeItem('authToken'); 
@@ -24,48 +28,46 @@ const Header = ({ setIsAuthenticated }) => {
     },
     ];
 
-    
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  const toggleSearch = () => {
+    setShowSearch((prev) => !prev);
+    if (showSearch) setSearchValue('');
+  };
+
+
   return (
-    <>
-      <nav className="navbar navbar-expand-lg navbar-dark">
-        <div className="container">
-          <Link className="navbar-brand" to="/subscriber/browser">
+    <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingInline: '20px' }}>
+      <div><Link className="navbar-brand" to="/subscriber/browse">
             Netcliq
-          </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/subscriber/browser">
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/subscriber/browser">
-                  Movies
-                </Link>
-              </li>
-            </ul>
-          </div>
-           <div className="d-flex">
-            <Dropdown menu={{ items }}>
-                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-            </Dropdown>
-                
-            </div>
-        </div>
-      </nav>
-    </>
+          </Link></div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {showSearch && (
+          <Input
+            size="middle"
+            placeholder="Search..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            className={`search-input ${showSearch ? 'fade-in' : 'fade-out'}`}
+            style={{ width: 200 }}
+          />
+        )}
+
+        <Button
+          type="primary"
+          shape="circle"
+          icon={showSearch ? <CloseOutlined /> : <SearchOutlined />}
+          onClick={toggleSearch}
+        />
+
+        <Dropdown menu={{ items }}>
+          <Avatar style={{ backgroundColor: '#87d068', cursor: 'pointer' }} icon={<UserOutlined />} />
+        </Dropdown>
+      </div>
+    </Header>
   );
 };
-export default Header;
+
+export default Navbar;

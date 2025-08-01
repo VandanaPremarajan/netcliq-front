@@ -3,7 +3,7 @@ import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./admin/pages/Dashboard";
 import Genre from "./admin/pages/Genre";
 import Content from "./admin/pages/Content";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./admin/pages/Login";
 import Registration from "./admin/pages/Registration";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -11,6 +11,9 @@ import { useEffect, useState } from "react";
 import { ConfigProvider, Spin } from "antd";
 import PublicRoute from "./components/PublicRoute";
 import Browse from "./subscriber/pages/Browse";
+import LandingPage from "./subscriber/pages/LandingPage";
+import Watch from "./subscriber/pages/Watch";
+import SubscriberLayout from "./components/SubscriberLayout";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -127,9 +130,20 @@ const App = () => {
               <Route
                 element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
               >
-                <Route path="browse" element={<Browse setIsAuthenticated={setIsAuthenticated} />} />
+                <Route element={<SubscriberLayout setIsAuthenticated={setIsAuthenticated} />}>
+                  <Route path="browse" element={<Browse />} />
+                  <Route path="watch/:id" element={<Watch />} />
+                </Route>
               </Route>
             </Route>
+            <Route
+              path="/"
+              element={
+                isAuthenticated
+                  ? <Navigate to="/subscriber/browse" />
+                  : <LandingPage />
+              }
+            />
           </Routes>
         </Router>
       </div>

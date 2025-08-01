@@ -1,0 +1,36 @@
+/* netflix-video.css */
+.netflix-video-container {
+  max-width: 800px;
+  margin: auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.video-js {
+  background-color: black;
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.vjs-control-bar {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.vjs-play-control .vjs-icon-placeholder:before {
+  font-size: 2em;
+  color: red; /* Netflix-style red play button */
+}
+
+.vjs-big-play-button {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid red;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+}
+
+.vjs-big-play-button .vjs-icon-placeholder:before {
+  font-size: 2rem;
+  color: red;
+}

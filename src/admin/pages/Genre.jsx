@@ -82,7 +82,7 @@ function Genre() {
               <div className="card">
                 <div className="card-header border-0">
                   <div className="d-flex justify-content-between">
-                    <h3 className="card-title">{isEdit ? 'Edit' : 'Add'} Genre</h3>
+                    <h3 className="card-title fs-5">{isEdit ? 'Edit' : 'Add'} Genre</h3>
                   </div>
                 </div>
                 <div className="card-body">
@@ -95,7 +95,7 @@ function Genre() {
               <div className="card">
                 <div className="card-header border-0">
                   <div className="d-flex justify-content-between">
-                    <h3 className="card-title">Genre List</h3>
+                    <h3 className="card-title fs-5">Genre List</h3>
                   </div>
                 </div>
                 <div className="card-body">

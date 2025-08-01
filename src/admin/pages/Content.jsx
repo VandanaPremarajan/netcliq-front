@@ -18,6 +18,12 @@ function Content() {
   const [messageApi, msgContextHolder] = message.useMessage();
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 3,
+    total: 0,
+  });
   
   const [isEditRecord, setIsEditRecord] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
@@ -32,14 +38,21 @@ function Content() {
     setIsModalOpen(false);
   };
   
-  const fetchContent = async () => {
+  const fetchContent = async (pagination) => {
     try{
-      const response = await getAllContent(authToken);
+      console.log(pagination)
+      const response = await getAllContent(authToken, pagination);
       setMovies(response.data);
       setIsTableLoading(false);
+      setPagination({
+        current: pagination.current, 
+        pageSize: pagination.pageSize,
+        total: response.data.total || 0,
+      });
     }
     catch(err){
       console.log(err);
+      setIsTableLoading(false);
     }
   };
 
@@ -59,7 +72,7 @@ function Content() {
 
   useEffect(() => {
     authToken = localStorage.getItem(Token_name);
-    fetchContent();
+    fetchContent(pagination);
     fetchGenre();
   }, []);
 
@@ -85,19 +98,19 @@ function Content() {
       title: record.title,
       description: record.description,
       year: dayjs(record.year.$d).format("YYYY"),
-      duration: "nil",
+      duration: (record.duration.hours * 60) + record.duration.minutes,
       quality: record.quality,
       language: record.language,
       subtitles: record.subtitles,
       cast: record.cast,
       genre_ID: record.genre,
-      video_file: record.poster.file.originFileObj,
-      poster: record.poster.file.originFileObj,
-      trailer_video: record.poster.file.originFileObj,
+      video_file: record.video_file.file !== undefined ? record.video_file.file.originFileObj : record.video_file[0].url.replace(/^https?:\/\/[^\/]+\/?/, ''),
+      poster: record.poster.file !== undefined ? record.poster.file.originFileObj : record.poster[0].url.replace(/^https?:\/\/[^\/]+\/?/, ''),
+      trailer_video: record.trailer_video.file !== undefined ? record.trailer_video.file.originFileObj : record.trailer_video[0].url.replace(/^https?:\/\/[^\/]+\/?/, ''),
       content_type: record.content_type,
-      is_premium: record.is_premium ? true : false,
-      release_date: dayjs(record.release_date.$d).format("MMMM D, YYYY"),
+      release_date: record.release_date ? record.release_date.toDate() : null,
     };
+    // console.log(objValues);
     if (isEditRecord && Object.keys(isEditRecord).length > 0) {
       try {
         await updateContent(isEditRecord._id, objValues, authToken);
@@ -144,11 +157,6 @@ function Content() {
       <div className="content">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-3">
-              <Button type="primary" onClick={showModal}>
-                Add new
-              </Button>
-            </div>
             <div className="col-md-12 mb-3">
               <AddContent
                 isEditRecord={isEditRecord}
@@ -165,16 +173,22 @@ function Content() {
               <div className="card">
                 <div className="card-header border-0">
                   <div className="d-flex justify-content-between">
-                    <h3 className="card-title">Content List</h3>
+                    <h3 className="card-title fs-5">Content List</h3>
+                    <Button type="primary" onClick={showModal}>
+                      Add new
+                    </Button>
                   </div>
                 </div>
                 <div className="card-body">
                   <ListMovie
                     list={movies}
+                    pagination={pagination}
                     handleDelete={handleDelete}
                     handleEdit={handleEdit}
                     setIsModalOpen={setIsModalOpen}
                     isLoading={isTableLoading}
+                    fetchMovies={fetchContent}
+                    setIsTableLoading={setIsTableLoading}
                   />
                 </div>
               </div>

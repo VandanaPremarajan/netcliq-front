@@ -4,3 +4,5 @@ export const content_type = [
 ];
 
 export const textareaMaxLength = 1000;
+
+export const date_format = 'MMMM D, YYYY';
