@@ -11,7 +11,7 @@ const LandingPage = () => {
         navigate('/subscriber/login');
     }
   return (
-    <div className="landing-page">
+    <div className="landing-page netcliq_bg">
       <div className="header">
         <Link className="navbar-brand" to="/">
             Netcliq

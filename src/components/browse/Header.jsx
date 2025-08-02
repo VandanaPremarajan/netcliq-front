@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Input, Button, Avatar, Dropdown } from 'antd';
+import { useState } from 'react';
+import { Layout, Input, Button, Avatar, Dropdown } from 'antd';
 import { SearchOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
 import './css/SearchAnimation.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -44,22 +44,11 @@ const Navbar = ({ setIsAuthenticated }) => {
           </Link></div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {showSearch && (
-          <Input
-            size="middle"
-            placeholder="Search..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className={`search-input ${showSearch ? 'fade-in' : 'fade-out'}`}
-            style={{ width: 200 }}
-          />
-        )}
-
         <Button
           type="primary"
           shape="circle"
-          icon={showSearch ? <CloseOutlined /> : <SearchOutlined />}
-          onClick={toggleSearch}
+          icon={<SearchOutlined />}
+          onClick={() => navigate('/subscriber/search')}
         />
 
         <Dropdown menu={{ items }}>

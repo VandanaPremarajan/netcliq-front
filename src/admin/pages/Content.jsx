@@ -6,8 +6,8 @@ import {
   updateContent,
 } from "../../services/movieService";
 import { getAllGenre } from "../../services/genreService";
-import AddContent from "../../components/content/addMovie";
-import ListMovie from "../../components/content/listMovie";
+import AddContent from "../../components/content/AddContent";
+import ListContent from "../../components/content/ListContent";
 import { notification, message, Button } from "antd";
 import dayjs from "dayjs";
 import { Token_name } from "../../constants/api_settings";
@@ -19,11 +19,12 @@ function Content() {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
 
-  const [pagination, setPagination] = useState({
+  const resetPagination = {
     current: 1,
     pageSize: 3,
     total: 0,
-  });
+  }
+  const [pagination, setPagination] = useState(resetPagination);
   
   const [isEditRecord, setIsEditRecord] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
@@ -79,7 +80,7 @@ function Content() {
   const handleDelete = async (id) => {
     try {
       await deleteContent(id, authToken);
-      fetchContent();
+      fetchContent(pagination);
       messageApi.success("Content deleted");
     } catch (err) {
       console.log("Catch Error 400: " + err);
@@ -146,7 +147,7 @@ function Content() {
     }
     setIsEdit(false);
     closeModal();
-    fetchContent();
+    fetchContent(resetPagination);
   };
 
   
@@ -180,7 +181,7 @@ function Content() {
                   </div>
                 </div>
                 <div className="card-body">
-                  <ListMovie
+                  <ListContent
                     list={movies}
                     pagination={pagination}
                     handleDelete={handleDelete}

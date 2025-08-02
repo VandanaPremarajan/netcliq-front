@@ -1,20 +1,11 @@
-.landing-page {
-  /* background-image: url(../assets/hero_image.png); */
-  background: #000;
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
-  color: white;
-  position: relative;
-  font-family: 'Helvetica Neue', sans-serif;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   padding: 20px 50px;
   align-items: center;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+  position: relative;
+  z-index: 1;
 }
 
 .logo {
@@ -34,6 +25,7 @@
   transform: translate(-50%, -30%);
   max-width: 800px;
   padding: 0 20px;
+  z-index: 1;
 }
 
 .hero-section h1 {

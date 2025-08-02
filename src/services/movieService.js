@@ -4,7 +4,6 @@ import { Base_URL, TOKEN_HEADER_KEY } from '../constants/api_settings';
 const API_URL = Base_URL+'movies';
 
 export const getAllContent = async (token, pagination) => {
-    console.log(pagination)
     return await axios.get(API_URL, 
         {
             headers : {[TOKEN_HEADER_KEY] : token}, 
@@ -16,12 +15,17 @@ export const getAllContent = async (token, pagination) => {
     );
 };
 
+
+export const searchAllContent = async (token, params) => {
+    return await axios.get(API_URL+'/search', { headers : {[TOKEN_HEADER_KEY] : token},  params}
+    );
+};
+
 export const getContent = async (id, token) => {
     return await axios.get(`${API_URL}/${id}`, {headers : {[TOKEN_HEADER_KEY] : token}});
 };
 
 export const addContent = async (content, token) => {
-    console.log(content);
     var bodyFormData = new FormData();
         bodyFormData.append('title', content.title);
         bodyFormData.append('description', content.description);

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Card, Button, Form, Input, notification } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { isValidAdmin, isValidSubscriber } from "../../services/userService";
-import { Token_name } from "../../constants/api_settings";
-import AppFooter from "../../components/AppFooter";
+import { isValidAdmin, isValidSubscriber } from "./services/userService";
+import { Token_name } from "./constants/api_settings";
+import AppFooter from "./components/AppFooter";
 
 const Login = ({setIsAuthenticated}) => {
   const location = useLocation();
@@ -14,8 +14,6 @@ const Login = ({setIsAuthenticated}) => {
   // const isSubscriberLogin = location.pathname.includes('/subscriber/login');
 
   const [notify, contextHolder] = notification.useNotification();
-console.log('Current path:', location.pathname);
-console.log('Starts with /admin:', location.pathname.startsWith('/admin'));
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn) {
@@ -62,17 +60,17 @@ console.log('Starts with /admin:', location.pathname.startsWith('/admin'));
   return (
     <>
     {contextHolder}
-      <div className="dark_bg vh-100 position-relative">
+      <div className="dark_bg vh-100 position-relative netcliq_bg">
         <div className="container">
           
           <div className="row d-flex justify-content-center pt-5">
-            <div className="col-md-6">
+            <div className="col-md-4 positon-relation z-1">
               <div className="navbar-brand logo_login mb-4">Netcliq</div>
-              <Card title="Login" variant="borderless" style={{ width: "100%" }}>
+              <Card title="Login" variant="borderless" style={{ width: "100%" }} className="login_page">
                 <Form
                   name="basic"
-                  labelCol={{ span: 8 }}
-                  wrapperCol={{ span: 16 }}
+                  // labelCol={{ span: 8 }}
+                  // wrapperCol={{ span: 16 }}
                   style={{ maxWidth: 600 }}
                   initialValues={{ remember: true }}
                   onFinish={onFinish}
@@ -80,23 +78,23 @@ console.log('Starts with /admin:', location.pathname.startsWith('/admin'));
                   autoComplete="off"
                 >
                   <Form.Item
-                    label="Email"
+                    // label="Email"
                     name="email_address"
                     rules={[
                       { type: 'email', required: true, message: "Please input your email!" },
-                    ]}
+                    ]} 
                   >
-                    <Input />
+                    <Input placeholder="Email address" />
                   </Form.Item>
 
                   <Form.Item
-                    label="Password"
+                    // label="Password"
                     name="password"
                     rules={[
                       { required: true, message: "Please input your password!" },
                     ]}
                   >
-                    <Input.Password />
+                    <Input.Password placeholder="Password" />
                   </Form.Item>
 
                   <Form.Item label={null}>
@@ -109,7 +107,7 @@ console.log('Starts with /admin:', location.pathname.startsWith('/admin'));
             </div>
           </div>
         </div>
-        <div className="position-absolute bottom-0 w-100">
+        <div className="position-absolute z-1 bottom-0 w-100">
           <AppFooter /> 
         </div>
         

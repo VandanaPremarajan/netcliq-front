@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Typography, Tag, Space, Button, Modal, Select, List, Spin,
 } from 'antd';
@@ -23,6 +23,8 @@ const Watch = () => {
 
   const isSeries = false;
 
+  const [hourTxt, setHourTxt] = useState('hrs');
+
   const handlePlayVideo = (url) => {
     setVideoUrl(url);
     setIsModalVisible(true);
@@ -37,21 +39,23 @@ const Watch = () => {
     setSelectedSeason(value);
   };
 
-  const fetchContent = async (id, token) => {
+  const fetchContent = useCallback(async (id, token) => {
           try{
             const response = await getContent(id, token);
             setMovie(response.data);
+            setHourTxt(Math.floor(response.data.duration / 60) === 1 ? 'hr' : 'hrs');
             setLoading(false);
           }
           catch(err){
             console.log(err);
           }
-        };
+        },[]);
 
   useEffect(() => {
         authToken = localStorage.getItem(Token_name);
           fetchContent(id, authToken);
-        }, [id]);
+        }, [id, fetchContent]);
+
   if (loading) {
     return (
       <div className="watch-loading">
@@ -78,7 +82,6 @@ console.log(movie);
 
   return (
     <div className="container-fluid bg-black text-white min-vh-100 d-flex flex-column flex-md-row p-0">
-      {/* Poster */}
       <div className="col-12 col-md-6 p-0 position-relative" style={{ maxHeight: '100vh', overflow: 'hidden' }}>
         <img
           src={APP_URL + movie.poster}
@@ -87,7 +90,6 @@ console.log(movie);
         />
         <div className="position-absolute top-0 start-0 w-100 h-100" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.1))' }} />
 
-        {/* Play Full Button */}
         {!isSeries && (
           <Button
             type="primary"
@@ -101,12 +103,11 @@ console.log(movie);
         )}
       </div>
 
-      {/* Details */}
       <div className="col-12 col-md-6 px-4 py-5" style={{ background: 'linear-gradient(to left, #000000, #111111)' }}>
         <Space direction="vertical" size="middle" style={{ maxWidth: '600px', width: '100%' }}>
           <Title level={1} style={{ color: '#fff', marginBottom: 0 }}>{movie.title}</Title>
-          <div className="text-muted">
-            {movie.year} • {movie.duration}
+          <div style={{ color: '#bbb' }}>
+            {movie.year} • {Math.floor(movie.duration / 60)+hourTxt} {movie.duration % 60}mins
           </div>
 
           <div>
@@ -115,7 +116,7 @@ console.log(movie);
             ))}
           </div>
 
-          <Paragraph style={{ color: '#bbb' }}>
+          <Paragraph className='text-white'>
             {movie.description}
           </Paragraph>
 
@@ -124,7 +125,7 @@ console.log(movie);
               type="primary"
               icon={<VideoCameraOutlined />}
               ghost
-              onClick={() => handlePlayVideo(APP_URL + movie.trailer)}
+              onClick={() => handlePlayVideo(APP_URL + movie.trailer_video)}
             >
               Watch Trailer
             </Button>
@@ -146,7 +147,6 @@ console.log(movie);
             </Button>
           </Space>
 
-          {/* SERIES ONLY: Season/Episode Listing */}
           {isSeries && movie.seasons && (
             <>
               <div className="mt-4">
@@ -188,14 +188,13 @@ console.log(movie);
         </Space>
       </div>
 
-      {/* Video Modal */}
       <Modal
         open={isModalVisible}
         onCancel={handleClose}
-        footer={null}
+        footer={null} 
         centered
         width={800}
-        bodyStyle={{ padding: 0, backgroundColor: 'black' }}
+        style={{ padding: 0, backgroundColor: 'black' }}
       >
         <video
           controls

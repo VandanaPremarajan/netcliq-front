@@ -4,7 +4,7 @@ import { date_format } from "../../constants/formConstants";
 import { APP_URL } from "../../constants/api_settings";
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const ListMovie = ({
+const ListContent = ({
   list,
   pagination,
   handleDelete,
@@ -146,4 +146,4 @@ const ListMovie = ({
   );
 };
 
-export default ListMovie;
+export default ListContent;

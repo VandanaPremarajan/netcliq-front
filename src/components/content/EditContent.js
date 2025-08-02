@@ -3,7 +3,7 @@ import {useState, useEffect, useCallback} from "react";
 import { updateContent , getContent} from "../../services/movieService";
 import { useNavigate } from "react-router-dom";
 
-function EditContent(){
+const EditContent = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const setInputValues = (data) => {

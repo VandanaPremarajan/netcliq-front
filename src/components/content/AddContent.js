@@ -18,7 +18,7 @@ import DurationSelector from "../DurationSelector";
 // import VideoPlayer from "../VideoPlayer";
 import { APP_URL } from "../../constants/api_settings";
 
-function AddContent({
+const AddContent = ({
   isEditRecord,
   onSubmit,
   isEdit,
@@ -26,7 +26,7 @@ function AddContent({
   genres,
   isModalOpen,
   closeModal,
-}) {
+}) => {
   const [form] = Form.useForm();
   const { TextArea } = Input;
 
