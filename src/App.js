@@ -5,7 +5,7 @@ import Genre from "./admin/pages/Genre";
 import Content from "./admin/pages/Content";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Login";
-import Registration from "./admin/pages/Registration";
+import Registration from "./Registration";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
 import { ConfigProvider, Spin } from "antd";
@@ -15,6 +15,7 @@ import LandingPage from "./subscriber/pages/LandingPage";
 import Watch from "./subscriber/pages/Watch";
 import SubscriberLayout from "./components/SubscriberLayout";
 import SearchContent from "./subscriber/pages/SearchContent";
+import ProfilePage from "./subscriber/pages/Profile";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -135,6 +136,7 @@ const App = () => {
                   <Route path="browse" element={<Browse />} />
                   <Route path="watch/:id" element={<Watch />} />
                   <Route path="search" element={<SearchContent />} />
+                  <Route path="profile" element={<ProfilePage />} />
                 </Route>
               </Route>
             </Route>

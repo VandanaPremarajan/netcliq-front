@@ -1,72 +1,97 @@
 import { useEffect } from "react";
 import { Card, Button, Form, Input, notification } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { isValidAdmin, isValidSubscriber } from "./services/userService";
 import { Token_name } from "./constants/api_settings";
 import AppFooter from "./components/AppFooter";
 
-const Login = ({setIsAuthenticated}) => {
+const Login = ({ setIsAuthenticated }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const registered = searchParams.get("registered");
 
   // Detect login type from URL
-  const isAdminLogin = location.pathname.toLowerCase().includes('/admin/login');
+  const isAdminLogin = location.pathname.toLowerCase().includes("/admin/login");
   // const isSubscriberLogin = location.pathname.includes('/subscriber/login');
 
   const [notify, contextHolder] = notification.useNotification();
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn) {
-      setIsAuthenticated(true); 
+      setIsAuthenticated(true);
     }
   }, [setIsAuthenticated]);
 
-  const onFinish = async(values) => {
-    try{
-      console.log(isAdminLogin)
-      const response = isAdminLogin ? await isValidAdmin(values) : await isValidSubscriber(values);
-      if(response.data.status === true){
-        localStorage.setItem('isLoggedIn', response.data.status);
+  const onFinish = async (values) => {
+    try {
+      const response = isAdminLogin
+        ? await isValidAdmin(values)
+        : await isValidSubscriber(values);
+      if (response.data.status === true) {
+        console.log(response.data)
+        localStorage.setItem("isLoggedIn", response.data.status);
         localStorage.setItem(Token_name, response.data.accessToken);
-        localStorage.setItem('role', response.data.user.role);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         setIsAuthenticated(response.data.status);
         if (isAdminLogin) {
-          navigate('/admin/genre');
+          navigate("/admin/genre");
         } else {
-          console.log(123)
-          navigate('/subscriber/browse');
+          navigate("/subscriber/browse");
         }
-      }else{
+      } else {
         console.log("Error");
         notify.error({
           message: "Error",
           description: response.data.error,
           placement: "top",
         });
-      }  
-    }catch(err){
-      console.log("Catch Error 400 "+ err);
-      notify.error({
-        message: "User doesn't exist",
-        description: "Please check the fields and try again",
-        placement: "top",
-      });
+      }
+    } catch (err) {
+      console.log("Catch Error 400 " + err);
+      if (!err.response.data.status) {
+        notify.error({
+          message: err.response.data.message,
+          description: "Please check the fields and try again",
+          placement: "top",
+        });
+      } else {
+        notify.error({
+          message: "Something went wrong",
+          description: "Please check the fields and try again later",
+          placement: "top",
+        });
+      }
     }
-
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <div className="dark_bg vh-100 position-relative netcliq_bg">
         <div className="container">
-          
           <div className="row d-flex justify-content-center pt-5">
             <div className="col-md-4 positon-relation z-1">
               <div className="navbar-brand logo_login mb-4">Netcliq</div>
-              <Card title="Login" variant="borderless" style={{ width: "100%" }} className="login_page">
+              <Card
+                title="Login"
+                variant="borderless"
+                style={{ width: "100%" }}
+                className="login_page"
+              >
+                {registered && (
+                  <p className="text-white">
+                    You have been registered successfully. Please login to
+                    continue.
+                  </p>
+                )}
                 <Form
                   name="basic"
                   // labelCol={{ span: 8 }}
@@ -81,8 +106,12 @@ const Login = ({setIsAuthenticated}) => {
                     // label="Email"
                     name="email_address"
                     rules={[
-                      { type: 'email', required: true, message: "Please input your email!" },
-                    ]} 
+                      {
+                        type: "email",
+                        required: true,
+                        message: "Please input your email!",
+                      },
+                    ]}
                   >
                     <Input placeholder="Email address" />
                   </Form.Item>
@@ -91,7 +120,10 @@ const Login = ({setIsAuthenticated}) => {
                     // label="Password"
                     name="password"
                     rules={[
-                      { required: true, message: "Please input your password!" },
+                      {
+                        required: true,
+                        message: "Please input your password!",
+                      },
                     ]}
                   >
                     <Input.Password placeholder="Password" />
@@ -103,17 +135,30 @@ const Login = ({setIsAuthenticated}) => {
                     </Button>
                   </Form.Item>
                 </Form>
+                <span className="text-white">
+                  New user?
+                  {isAdminLogin ? (
+                    <Link to="/admin/registration" className="text-white ms-1">
+                      Sign In
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/subscriber/registration"
+                      className="text-white ms-1"
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                </span>
               </Card>
             </div>
           </div>
         </div>
         <div className="position-absolute z-1 bottom-0 w-100">
-          <AppFooter /> 
+          <AppFooter />
         </div>
-        
-      </div> 
-      
-    </>  
+      </div>
+    </>
   );
 };
 export default Login;

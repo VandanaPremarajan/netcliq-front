@@ -25,6 +25,7 @@ const Navbar = ({ setIsAuthenticated }) => {
     {
         key: '2',
         label: 'Profile',
+        onClick: () => {navigate('/subscriber/profile');}
     },
     ];
 
