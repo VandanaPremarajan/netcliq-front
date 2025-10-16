@@ -1,7 +1,6 @@
 import { Table, Space, Button, Popconfirm, Image, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { date_format } from "../../constants/formConstants";
-import { APP_URL } from "../../constants/api_settings";
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const ListContent = ({
@@ -33,7 +32,7 @@ const ListContent = ({
       render: (src) =>
         src ? (
           <Image
-            src={APP_URL + src}
+            src={src}
             alt="Thumbnail"
             width={60}
             height={90}

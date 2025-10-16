@@ -85,7 +85,7 @@ const CarouselBanner = ({ movies }) => {
           <SwiperSlide key={movie._id}>
             <div
               className="slide-background"
-              style={{ backgroundImage: `url(${APP_URL+movie.poster})` }}
+              style={{ backgroundImage: `url(${movie.poster})` }}
             >
               <div className="overlay">
                 <h1>{movie.title}</h1>

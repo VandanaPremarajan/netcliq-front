@@ -8,7 +8,7 @@ export const getAllContent = async (token, pagination) => {
         {
             headers : {[TOKEN_HEADER_KEY] : token}, 
             params: {
-                page: pagination.page,
+                page: pagination.current,
                 limit: pagination.pageSize,
             },
         }
@@ -42,7 +42,6 @@ export const addContent = async (content, token) => {
         bodyFormData.append('trailerVideo', content.trailer_video);
         bodyFormData.append('content_type', content.content_type);
         bodyFormData.append('release_date', content.release_date);
-        console.log(bodyFormData);
     return await axios.post(API_URL, bodyFormData, {headers : {'Content-Type' : 'multipart/form-data', [TOKEN_HEADER_KEY] : token}});
 };
 

@@ -16,7 +16,6 @@ import { content_type } from "../../constants/formConstants";
 import { textareaMaxLength } from "../../constants/formConstants";
 import DurationSelector from "../DurationSelector";
 // import VideoPlayer from "../VideoPlayer";
-import { APP_URL } from "../../constants/api_settings";
 
 const AddContent = ({
   isEditRecord,
@@ -95,7 +94,8 @@ const AddContent = ({
               uid: "-1",
               name: "poster.jpg",
               status: "done",
-              url: `${APP_URL}${isEditRecord.poster}`,
+              // url: `${APP_URL}${isEditRecord.poster}`,
+              url: isEditRecord.poster,
             },
           ];
           setPosterFileList(posterFile);
@@ -104,13 +104,12 @@ const AddContent = ({
         // Trailer
         let trailerFile;
         if (isEditRecord.trailer_video) {
-          const videoUrl = `${APP_URL}${isEditRecord.trailer_video}`;
           trailerFile = [
             {
               uid: "-2",
               name: "trailer.mp4",
               status: "done",
-              url: videoUrl,
+              url: isEditRecord.trailer_video,
             },
           ];
           setTrailerFileList(trailerFile);
@@ -131,13 +130,12 @@ const AddContent = ({
         // Video File
         let videoFile;
         if (isEditRecord.video_file) {
-          const videoUrl = `${APP_URL}${isEditRecord.video_file}`;
           videoFile = [
             {
               uid: "-3",
               name: "video.mp4",
               status: "done",
-              url: videoUrl,
+              url: isEditRecord.video_file,
             },
           ];
           setVideoFileList(videoFile);

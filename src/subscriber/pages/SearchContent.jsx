@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { AutoComplete, Input, Spin } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { searchAllContent } from "../../services/movieService";
-import { APP_URL, Token_name } from "../../constants/api_settings";
 import { Link } from "react-router-dom";
 import "./css/SearchContent.css";
 
@@ -64,7 +63,7 @@ const SearchContent = () => {
         label: (
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <img
-              src={APP_URL + movie.poster}
+              src={movie.poster}
               alt={movie.title}
               style={{ width: 40, height: 60, objectFit: "cover", borderRadius: 4 }}
             />
@@ -120,7 +119,7 @@ const SearchContent = () => {
             <Link to={`/subscriber/watch/${movie._id}`} key={movie._id}>
               <div className="search-card">
                 <img
-                  src={APP_URL + movie.poster}
+                  src={movie.poster}
                   alt={movie.title}
                   className="search-poster-img"
                 />

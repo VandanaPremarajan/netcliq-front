@@ -3,7 +3,7 @@ import {
   Typography, Tag, Space, Button, Modal, Select, List, Spin,
 } from 'antd';
 import { getContent } from '../../services/movieService';
-import { APP_URL, Token_name } from '../../constants/api_settings';
+import { Token_name } from '../../constants/api_settings';
 import { useParams } from 'react-router-dom';
 import {
   HeartOutlined, PlusOutlined, PlayCircleOutlined, VideoCameraOutlined
@@ -84,7 +84,7 @@ console.log(movie);
     <div className="container-fluid bg-black text-white min-vh-100 d-flex flex-column flex-md-row p-0">
       <div className="col-12 col-md-6 p-0 position-relative" style={{ maxHeight: '100vh', overflow: 'hidden' }}>
         <img
-          src={APP_URL + movie.poster}
+          src={movie.poster}
           alt={movie.title}
           className="img-fluid h-100 w-100 object-fit-cover"
         />
@@ -97,7 +97,7 @@ console.log(movie);
             icon={<PlayCircleOutlined />}
             size="large"
             className="position-absolute top-50 start-50 translate-middle"
-            onClick={() => handlePlayVideo(APP_URL + movie.video_file)}
+            onClick={() => handlePlayVideo(movie.video_file)}
             style={{ fontSize: '2rem', backgroundColor: 'rgba(255, 255, 255, 0.2)', border: 'none' }}
           />
         )}
@@ -125,7 +125,7 @@ console.log(movie);
               type="primary"
               icon={<VideoCameraOutlined />}
               ghost
-              onClick={() => handlePlayVideo(APP_URL + movie.trailer_video)}
+              onClick={() => handlePlayVideo(movie.trailer_video)}
             >
               Watch Trailer
             </Button>
@@ -170,7 +170,7 @@ console.log(movie);
                 renderItem={episode => (
                   <List.Item
                     actions={[
-                      <Button type="link" onClick={() => handlePlayVideo(APP_URL + episode.video)}>
+                      <Button type="link" onClick={() => handlePlayVideo(episode.video)}>
                         <PlayCircleOutlined /> Play
                       </Button>
                     ]}

@@ -41,7 +41,6 @@ function Content() {
   
   const fetchContent = async (pagination) => {
     try{
-      console.log(pagination)
       const response = await getAllContent(authToken, pagination);
       setMovies(response.data);
       setIsTableLoading(false);
