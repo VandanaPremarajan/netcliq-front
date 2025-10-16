@@ -120,7 +120,7 @@ const AddContent = ({
             fluid: true,
             sources: [
               {
-                src: videoUrl,
+                src: isEditRecord.trailer_video,
                 type: "video/mp4",
               },
             ],
@@ -146,7 +146,7 @@ const AddContent = ({
             fluid: true,
             sources: [
               {
-                src: videoUrl,
+                src: isEditRecord.video_file,
                 type: "video/mp4",
               },
             ],
