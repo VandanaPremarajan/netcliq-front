@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { AutoComplete, Input, Spin } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { searchAllContent } from "../../services/movieService";
+import { Token_name } from "../../constants/api_settings";
 import { Link } from "react-router-dom";
 import "./css/SearchContent.css";
 
